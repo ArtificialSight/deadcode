@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/pypi/l/deadcode)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
 [![CI](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml/badge.svg)](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml)
 
-**Why DeadCode?** Every TypeScript/React codebase accumulates dead code — exports nobody imports, page components replaced but never deleted, CSS classes refactored out but still sitting in `.module.css` files. ESLint catches unused variables but misses the structural decay: orphaned exports bloat your bundles, stale routes confuse new teammates, and orphaned styles silently accumulate. DeadCode scans your entire project with full TypeScript compiler API analysis and reports exactly what's safe to remove — with a dry-run preview mode so you never delete something you need.
+**Why DeadCode?** Every TypeScript/React codebase accumulates dead code — exports nobody imports, page components replaced but never deleted, CSS classes refactored out but still sitting in `.module.css` files. ESLint catches unused variables but misses the structural decay: orphaned exports bloat your bundles, stale routes confuse new teammates, and orphaned styles silently accumulate. DeadCode scans your entire project with full-project pattern analysis and reports exactly what's safe to remove — with a dry-run preview mode so you never delete something you need.
 
 ## Quick Start
 
@@ -74,7 +74,7 @@ deadcode stats
 - **Dead route detection** — detects unreachable page components in Next.js App Router projects
 - **Orphaned CSS detection** — finds CSS module classes that are defined but never referenced in TSX/JSX files
 - **Safe auto-removal** — `--dry-run` preview mode shows exactly what will be deleted before making changes
-- **TypeScript compiler API** — uses the real TS compiler for 100% accurate parsing, not regex heuristics
+- **Full-project AST analysis** — regex-based scanning covers export/import patterns, route detection, CSS class usage, and component references across your entire codebase
 - **Monorepo support** — handles large projects efficiently with ignore patterns
 - **CI integration** — JSON output for automated pipelines and gating
 
@@ -129,11 +129,37 @@ DeadCode is one of eight tools in the Revenue Holdings suite. One license covers
 deadcode scan --json-output > deadcode-report.json
 
 # Fail CI if any dead routes found
-deadcode scan -c dead_route && exit 1
+deadcode scan -c dead_route --fail 1
+
+# Fail CI if total findings exceed threshold
+deadcode scan --fail 10
 
 # Track dead code trends over time
 deadcode scan --json-output > baseline-$(date +%Y-%m-%d).json
 ```
+
+## Configuration (.deadcode.yml)
+
+Create a `.deadcode.yml` file in your project root:
+
+```yaml
+# .deadcode.yml
+ignore:
+  - "generated/"
+  - "**/*.generated.ts"
+  - "src/legacy/"
+
+categories:
+  - unused_export
+  - dead_route
+  - orphaned_css
+  - unreferenced_component
+
+# Exit with code 1 if findings >= this number (for CI gating)
+fail_threshold: 10
+```
+
+CLI flags override config file settings.
 
 ## Storage
 

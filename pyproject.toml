@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "deadcode"
-version = "0.1.0"
+version = "0.1.1"
 description = "CLI tool to detect and auto-remove unused exports, dead routes, orphaned CSS in TS/React/Next.js projects"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,6 +27,7 @@ dependencies = [
     "click>=8.1.0",
     "rich>=13.0.0",
     "pathspec>=0.11.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]

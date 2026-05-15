@@ -1,0 +1,231 @@
+"""Tests for DeadCode config, --fail option, and bug fixes."""
+
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+
+import pytest
+
+from deadcode.config import DeadCodeConfig
+from deadcode.scanner import DeadCodeScanner, ScanResult, Finding
+from deadcode.cli import cli
+
+
+@pytest.fixture
+def runner():
+    from click.testing import CliRunner
+    return CliRunner()
+
+
+@pytest.fixture
+def sample_project(tmp_path):
+    """Create a sample TS/React project structure."""
+    utils = tmp_path / "src" / "utils.ts"
+    utils.parent.mkdir(parents=True, exist_ok=True)
+    utils.write_text(
+        'export function usedHelper() { return 1; }\n'
+        'export function unusedHelper() { return 2; }\n'
+        'export const USED_CONST = "used";\n'
+        'export const UNUSED_CONST = "unused";\n'
+    )
+
+    button = tmp_path / "src" / "components" / "Button.tsx"
+    button.parent.mkdir(parents=True, exist_ok=True)
+    button.write_text(
+        'import { usedHelper, USED_CONST } from "../utils";\n'
+        'export function Button() {\n'
+        '  return <button className="btn-primary">{usedHelper()}</button>;\n'
+        '}\n'
+    )
+
+    widget = tmp_path / "src" / "components" / "UnusedWidget.tsx"
+    widget.write_text(
+        'export function UnusedWidget() {\n'
+        '  return <div>Unused</div>;\n'
+        '}\n'
+    )
+
+    css = tmp_path / "src" / "styles" / "main.css"
+    css.parent.mkdir(parents=True, exist_ok=True)
+    css.write_text(
+        '.btn-primary {\n'
+        '  background: blue;\n'
+        '}\n'
+        '.orphaned-class {\n'
+        '  color: red;\n'
+        '}\n'
+    )
+
+    page = tmp_path / "src" / "app" / "page.tsx"
+    page.parent.mkdir(parents=True, exist_ok=True)
+    page.write_text(
+        'import { Button } from "../components/Button";\n'
+        'export default function Page() {\n'
+        '  return <Button />;\n'
+        '}\n'
+    )
+
+    deadpage = tmp_path / "src" / "app" / "deadpage" / "page.tsx"
+    deadpage.parent.mkdir(parents=True, exist_ok=True)
+    deadpage.write_text(
+        'export default function DeadPage() {\n'
+        '  return <div>Dead</div>;\n'
+        '}\n'
+    )
+
+    return tmp_path
+
+
+class TestConfig:
+    def test_default_config(self):
+        config = DeadCodeConfig()
+        assert config.ignore == []
+        assert config.categories == ["unused_export", "dead_route", "orphaned_css", "unreferenced_component"]
+        assert config.fail_threshold == -1
+
+    def test_from_dict(self):
+        data = {"ignore": ["generated/"], "categories": ["unused_export"], "fail_threshold": 5}
+        config = DeadCodeConfig.from_dict(data)
+        assert config.ignore == ["generated/"]
+        assert config.categories == ["unused_export"]
+        assert config.fail_threshold == 5
+
+    def test_from_dict_partial(self):
+        data = {"ignore": ["legacy/"]}
+        config = DeadCodeConfig.from_dict(data)
+        assert config.ignore == ["legacy/"]
+        assert config.categories == ["unused_export", "dead_route", "orphaned_css", "unreferenced_component"]
+
+    def test_load_from_yml(self, tmp_path):
+        config_file = tmp_path / ".deadcode.yml"
+        config_file.write_text(
+            'ignore:\n'
+            '  - "generated/"\n'
+            '  - "legacy/"\n'
+            'categories:\n'
+            '  - unused_export\n'
+            'fail_threshold: 3\n'
+        )
+        config = DeadCodeConfig.load(tmp_path)
+        assert config.ignore == ["generated/", "legacy/"]
+        assert config.categories == ["unused_export"]
+        assert config.fail_threshold == 3
+
+    def test_load_missing_yml(self, tmp_path):
+        config = DeadCodeConfig.load(tmp_path)
+        assert config.ignore == []
+        assert config.fail_threshold == -1
+
+    def test_load_empty_yml(self, tmp_path):
+        config_file = tmp_path / ".deadcode.yml"
+        config_file.write_text("")
+        config = DeadCodeConfig.load(tmp_path)
+        assert config.ignore == []
+
+    def test_load_invalid_yml(self, tmp_path):
+        config_file = tmp_path / ".deadcode.yml"
+        config_file.write_text("not a dict: but\n  nested: weirdly")
+        config = DeadCodeConfig.load(tmp_path)
+        # Should fall back to defaults
+        assert config.ignore == []
+
+
+class TestFailOption:
+    def test_fail_exits_1_when_threshold_met(self, runner, sample_project):
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "--fail", "1"])
+        assert result.exit_code == 1
+
+    def test_fail_exits_0_when_below_threshold(self, runner, sample_project):
+        # Set a very high threshold
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "--fail", "999"])
+        assert result.exit_code == 0
+
+    def test_fail_zero_exits_1_on_any_finding(self, runner, sample_project):
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "--fail", "0"])
+        assert result.exit_code == 1
+
+    def test_fail_with_json_output(self, runner, sample_project):
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "--json-output", "--fail", "1"])
+        assert result.exit_code == 1
+        # JSON should still be valid
+        data = json.loads(result.output, strict=False)
+        assert "findings" in data
+
+    def test_fail_from_config(self, runner, tmp_path):
+        """Test that fail_threshold in .deadcode.yml triggers exit 1."""
+        # Create a project with dead code and a config
+        utils = tmp_path / "src" / "mod.ts"
+        utils.parent.mkdir(parents=True, exist_ok=True)
+        utils.write_text('export function unusedFunc() { return 1; }\n')
+
+        config = tmp_path / ".deadcode.yml"
+        config.write_text('fail_threshold: 1\n')
+
+        result = runner.invoke(cli, ["-p", str(tmp_path), "scan"])
+        assert result.exit_code == 1
+
+
+class TestConfigIgnoreMerge:
+    def test_config_ignore_used_in_scan(self, runner, tmp_path):
+        """Config file ignore patterns should be applied during scan."""
+        mod = tmp_path / "src" / "mod.ts"
+        mod.parent.mkdir(parents=True, exist_ok=True)
+        mod.write_text('export function unused() { return 1; }\n')
+
+        config = tmp_path / ".deadcode.yml"
+        config.write_text('ignore:\n  - "src/"\n')
+
+        result = runner.invoke(cli, ["-p", str(tmp_path), "scan", "--json-output"])
+        assert result.exit_code == 0
+        data = json.loads(result.output, strict=False)
+        # Should have 0 findings since src/ is ignored
+        assert len(data["findings"]) == 0
+
+    def test_cli_ignore_overrides_config(self, runner, tmp_path):
+        """CLI --ignore should be merged with config ignore."""
+        mod = tmp_path / "src" / "mod.ts"
+        mod.parent.mkdir(parents=True, exist_ok=True)
+        mod.write_text('export function unused() { return 1; }\n')
+
+        # -i is a group-level option, must come before subcommand
+        result = runner.invoke(cli, ["-p", str(tmp_path), "-i", "src/", "scan", "--json-output"])
+        assert result.exit_code == 0
+        data = json.loads(result.output, strict=False)
+        assert len(data["findings"]) == 0
+
+
+class TestBugFixUnreferencedComponents:
+    def test_component_imported_not_reported(self, tmp_path):
+        """Verify the bug fix: components that ARE imported should not be reported."""
+        comp = tmp_path / "src" / "Button.tsx"
+        comp.parent.mkdir(parents=True, exist_ok=True)
+        comp.write_text(
+            'export function Button() { return <div>Hi</div>; }\n'
+        )
+        app = tmp_path / "src" / "App.tsx"
+        app.write_text(
+            'import { Button } from "./Button";\n'
+            'export function App() { return <Button />; }\n'
+        )
+
+        scanner = DeadCodeScanner(tmp_path)
+        result = scanner.scan()
+
+        comp_names = {f.name for f in result.unreferenced_components}
+        assert "Button" not in comp_names, f"Button should not be unreferenced — it's imported by App.tsx"
+
+    def test_component_not_imported_is_reported(self, tmp_path):
+        """Component with zero imports should still be reported."""
+        comp = tmp_path / "src" / "Orphan.tsx"
+        comp.parent.mkdir(parents=True, exist_ok=True)
+        comp.write_text(
+            'export function Orphan() { return <div>Orphan</div>; }\n'
+        )
+
+        scanner = DeadCodeScanner(tmp_path)
+        result = scanner.scan()
+
+        comp_names = {f.name for f in result.unreferenced_components}
+        assert "Orphan" in comp_names

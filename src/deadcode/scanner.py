@@ -210,13 +210,8 @@ class DeadCodeScanner:
         self._find_orphaned_css(css_classes, used_css_classes, result)
 
         # 2d. Unreferenced components
-        # Collect all component names imported across all files
-        all_imported_names: set[str] = set()
-        for name_set in imports.values():
-            pass  # imports maps name->files
-        for name in exports:
-            if name in imports:
-                all_imported_names.add(name)
+        # Collect all names that are imported somewhere (i.e., actually used)
+        all_imported_names: set[str] = set(imports.keys())
         self._find_unreferenced_components(components, all_imported_names, result)
 
         return result

@@ -12,10 +12,13 @@ from rich.console import Console
 from rich.table import Table
 
 from . import __version__
+from .config import DeadCodeConfig
 from .scanner import DeadCodeScanner, ScanResult, Finding
 
 console = Console()
 err_console = Console(stderr=True)
+
+ALL_CATEGORIES = ["unused_export", "dead_route", "orphaned_css", "unreferenced_component"]
 
 
 @click.group()
@@ -32,6 +35,29 @@ def cli(ctx: click.Context, project: str, ignore: tuple[str, ...]) -> None:
     ctx.ensure_object(dict)
     ctx.obj["project"] = project
     ctx.obj["ignore"] = list(ignore) if ignore else None
+    # Load .deadcode.yml config
+    ctx.obj["config"] = DeadCodeConfig.load(project)
+
+
+def _merge_config_ignore(ctx: click.Context) -> list[str] | None:
+    """Merge CLI --ignore flags with .deadcode.yml ignore patterns."""
+    cli_ignore = ctx.obj.get("ignore")
+    config = ctx.obj.get("config")
+    config_ignore = config.ignore if config else []
+
+    if cli_ignore and config_ignore:
+        return config_ignore + cli_ignore
+    if cli_ignore:
+        return cli_ignore
+    if config_ignore:
+        return config_ignore
+    return None
+
+
+def _get_fail_threshold(ctx: click.Context) -> int:
+    """Get fail threshold from config."""
+    config = ctx.obj.get("config")
+    return config.fail_threshold if config else -1
 
 
 # ── scan ──────────────────────────────────────────────────────────────
@@ -39,12 +65,13 @@ def cli(ctx: click.Context, project: str, ignore: tuple[str, ...]) -> None:
 
 @cli.command()
 @click.option("--json-output", "-j", is_flag=True, help="Output as JSON")
-@click.option("--category", "-c", type=click.Choice(["unused_export", "dead_route", "orphaned_css", "unreferenced_component"]), default=None, help="Filter by category")
+@click.option("--category", "-c", type=click.Choice(ALL_CATEGORIES), default=None, help="Filter by category")
+@click.option("--fail", "fail_threshold", type=int, default=None, help="Exit code 1 if findings >= threshold (overrides .deadcode.yml)")
 @click.pass_context
-def scan(ctx: click.Context, json_output: bool, category: str | None) -> None:
+def scan(ctx: click.Context, json_output: bool, category: str | None, fail_threshold: int | None) -> None:
     """Scan project for dead code."""
     project = ctx.obj["project"]
-    ignore = ctx.obj.get("ignore")
+    ignore = _merge_config_ignore(ctx)
 
     if not Path(project).exists():
         err_console.print(f"[red]Project directory '{project}' not found.[/red]")
@@ -58,6 +85,11 @@ def scan(ctx: click.Context, json_output: bool, category: str | None) -> None:
     if category:
         findings = [f for f in findings if f.category == category]
 
+    # Also respect config-level category filter if no CLI override
+    config = ctx.obj.get("config")
+    if not category and config and config.categories:
+        findings = [f for f in findings if f.category in config.categories]
+
     if json_output:
         output = {
             "files_scanned": result.files_scanned,
@@ -69,50 +101,55 @@ def scan(ctx: click.Context, json_output: bool, category: str | None) -> None:
             "errors": result.errors,
         }
         console.print(json.dumps(output, indent=2, default=str))
-        return
+    else:
+        # Summary
+        console.print(f"\n[bold]DeadCode Scan[/bold] — {result.files_scanned} files scanned\n")
 
-    # Summary
-    console.print(f"\n[bold]DeadCode Scan[/bold] — {result.files_scanned} files scanned\n")
+        if not findings:
+            console.print("[green]✓ No dead code found![/green]")
+        else:
+            # Group by category
+            by_category: dict[str, list[Finding]] = {}
+            for f in findings:
+                by_category.setdefault(f.category, []).append(f)
 
-    if not findings:
-        console.print("[green]✓ No dead code found![/green]")
-        return
+            category_labels = {
+                "unused_export": "Unused Exports",
+                "dead_route": "Dead Routes",
+                "orphaned_css": "Orphaned CSS",
+                "unreferenced_component": "Unreferenced Components",
+            }
 
-    # Group by category
-    by_category: dict[str, list[Finding]] = {}
-    for f in findings:
-        by_category.setdefault(f.category, []).append(f)
+            for cat, cat_findings in by_category.items():
+                label = category_labels.get(cat, cat)
+                console.print(f"\n[bold yellow]{label}[/bold yellow] ({len(cat_findings)})")
 
-    category_labels = {
-        "unused_export": "Unused Exports",
-        "dead_route": "Dead Routes",
-        "orphaned_css": "Orphaned CSS",
-        "unreferenced_component": "Unreferenced Components",
-    }
+                table = Table(show_header=True)
+                table.add_column("File", style="cyan")
+                table.add_column("Line", style="magenta", justify="right")
+                table.add_column("Name", style="green")
+                table.add_column("Detail")
 
-    for cat, cat_findings in by_category.items():
-        label = category_labels.get(cat, cat)
-        console.print(f"\n[bold yellow]{label}[/bold yellow] ({len(cat_findings)})")
+                for f in cat_findings[:50]:  # Limit display
+                    table.add_row(f.file, str(f.line), f.name, f.detail[:60])
 
-        table = Table(show_header=True)
-        table.add_column("File", style="cyan")
-        table.add_column("Line", style="magenta", justify="right")
-        table.add_column("Name", style="green")
-        table.add_column("Detail")
+                console.print(table)
+                if len(cat_findings) > 50:
+                    console.print(f"  [dim]... and {len(cat_findings) - 50} more[/dim]")
 
-        for f in cat_findings[:50]:  # Limit display
-            table.add_row(f.file, str(f.line), f.name, f.detail[:60])
+            # Total
+            removable = sum(1 for f in findings if f.removable)
+            console.print(f"\n[bold]Total:[/bold] {len(findings)} findings ({removable} removable)")
 
-        console.print(table)
-        if len(cat_findings) > 50:
-            console.print(f"  [dim]... and {len(cat_findings) - 50} more[/dim]")
+        if result.errors:
+            console.print(f"\n[yellow]{len(result.errors)} scan errors (use --json-output to see)[/yellow]")
 
-    # Total
-    removable = sum(1 for f in findings if f.removable)
-    console.print(f"\n[bold]Total:[/bold] {len(findings)} findings ({removable} removable)")
-
-    if result.errors:
-        console.print(f"\n[yellow]{len(result.errors)} scan errors (use --json-output to see)[/yellow]")
+    # CI fail threshold
+    effective_threshold = fail_threshold if fail_threshold is not None else _get_fail_threshold(ctx)
+    if effective_threshold >= 0 and len(findings) >= effective_threshold:
+        if not json_output:
+            console.print(f"\n[red]FAIL: {len(findings)} findings >= threshold {effective_threshold}[/red]")
+        sys.exit(1)
 
 
 # ── remove ────────────────────────────────────────────────────────────
@@ -120,7 +157,7 @@ def scan(ctx: click.Context, json_output: bool, category: str | None) -> None:
 
 @cli.command()
 @click.option("--dry-run", is_flag=True, help="Preview what would be removed without making changes")
-@click.option("--category", "-c", type=click.Choice(["unused_export", "dead_route", "orphaned_css", "unreferenced_component"]), default=None, help="Only remove findings in this category")
+@click.option("--category", "-c", type=click.Choice(ALL_CATEGORIES), default=None, help="Only remove findings in this category")
 @click.pass_context
 def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
     """Remove dead code (with --dry-run for preview).
@@ -129,7 +166,7 @@ def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
     commit your code before running without it.
     """
     project = ctx.obj["project"]
-    ignore = ctx.obj.get("ignore")
+    ignore = _merge_config_ignore(ctx)
 
     if not dry_run:
         console.print("[red]WARNING: This will modify files. Use --dry-run first![/red]")
@@ -143,6 +180,11 @@ def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
     findings = result.findings
     if category:
         findings = [f for f in findings if f.category == category]
+
+    # Also respect config-level category filter if no CLI override
+    config = ctx.obj.get("config")
+    if not category and config and config.categories:
+        findings = [f for f in findings if f.category in config.categories]
 
     # Only remove removable findings
     removable = [f for f in findings if f.removable]
@@ -198,7 +240,8 @@ def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
 def stats(ctx: click.Context) -> None:
     """Show quick stats about the project's dead code."""
     project = ctx.obj["project"]
-    scanner = DeadCodeScanner(project)
+    ignore = _merge_config_ignore(ctx)
+    scanner = DeadCodeScanner(project, ignore_patterns=ignore)
     result = scanner.scan()
 
     console.print(f"Files scanned: [bold]{result.files_scanned}[/bold]")
