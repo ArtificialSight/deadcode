@@ -1,0 +1,15 @@
+node_modules/
+.git/
+.next/
+dist/
+build/
+out/
+coverage/
+__pycache__/
+*.min.js
+*.min.css
+.cache/
+public/
+static/
+.pytest_cache/
+src/deadcode.egg-info/
