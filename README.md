@@ -1,6 +1,10 @@
 # DeadCode
 
+[![GitHub stars](https://img.shields.io/github/stars/Coding-Dev-Tools/deadcode?style=social)](https://github.com/Coding-Dev-Tools/deadcode/stargazers)
+
 **Detect and remove unused exports, dead routes, orphaned CSS, and unreferenced components in TypeScript/React/Next.js projects.**
+
+> ⭐ **Star this repo** if you care about bundle size — it helps other devs find DeadCode!
 
 [![PyPI](https://img.shields.io/pypi/v/deadcode)](https://pypi.org/project/deadcode/)
 [![Python](https://img.shields.io/pypi/pyversions/deadcode)](https://pypi.org/project/deadcode/)
