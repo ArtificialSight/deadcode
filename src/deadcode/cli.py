@@ -10,6 +10,7 @@ from typing import Any
 import click
 from rich.console import Console
 from rich.table import Table
+from revenueholdings_license import require_license
 
 from . import __version__
 from .config import DeadCodeConfig
@@ -70,6 +71,7 @@ def _get_fail_threshold(ctx: click.Context) -> int:
 @click.pass_context
 def scan(ctx: click.Context, json_output: bool, category: str | None, fail_threshold: int | None) -> None:
     """Scan project for dead code."""
+    require_license("deadcode")
     project = ctx.obj["project"]
     ignore = _merge_config_ignore(ctx)
 
@@ -239,6 +241,7 @@ def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
 @click.pass_context
 def stats(ctx: click.Context) -> None:
     """Show quick stats about the project's dead code."""
+    require_license("deadcode")
     project = ctx.obj["project"]
     ignore = _merge_config_ignore(ctx)
     scanner = DeadCodeScanner(project, ignore_patterns=ignore)
