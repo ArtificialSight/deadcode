@@ -1,17 +1,17 @@
-# DeadCode
+﻿# DeadCode
 
 [![GitHub stars](https://img.shields.io/github/stars/Coding-Dev-Tools/deadcode?style=social)](https://github.com/Coding-Dev-Tools/deadcode/stargazers)
 
 **Detect and remove unused exports, dead routes, orphaned CSS, and unreferenced components in TypeScript/React/Next.js projects.**
 
-> ⭐ **Star this repo** if you care about bundle size — it helps other devs find DeadCode!
+> â­ **Star this repo** if you care about bundle size â€” it helps other devs find DeadCode!
 
 [![PyPI](https://img.shields.io/pypi/v/deadcode)](https://pypi.org/project/deadcode/)
 [![Python](https://img.shields.io/pypi/pyversions/deadcode)](https://pypi.org/project/deadcode/)
 [![License](https://img.shields.io/pypi/l/deadcode)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
 [![CI](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml/badge.svg)](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml)
 
-**Why DeadCode?** Every TypeScript/React codebase accumulates dead code — exports nobody imports, page components replaced but never deleted, CSS classes refactored out but still sitting in `.module.css` files. ESLint catches unused variables but misses the structural decay: orphaned exports bloat your bundles, stale routes confuse new teammates, and orphaned styles silently accumulate. DeadCode scans your entire project with full-project pattern analysis and reports exactly what's safe to remove — with a dry-run preview mode so you never delete something you need.
+**Why DeadCode?** Every TypeScript/React codebase accumulates dead code â€” exports nobody imports, page components replaced but never deleted, CSS classes refactored out but still sitting in `.module.css` files. ESLint catches unused variables but misses the structural decay: orphaned exports bloat your bundles, stale routes confuse new teammates, and orphaned styles silently accumulate. DeadCode scans your entire project with full-project pattern analysis and reports exactly what's safe to remove â€” with a dry-run preview mode so you never delete something you need.
 
 ## Quick Start
 
@@ -74,13 +74,13 @@ deadcode stats
 
 ## Features
 
-- **Unused export detection** — finds functions, types, classes, interfaces, enums, and consts that are exported but never imported within your project
-- **Dead route detection** — detects unreachable page components in Next.js App Router projects
-- **Orphaned CSS detection** — finds CSS module classes that are defined but never referenced in TSX/JSX files
-- **Safe auto-removal** — `--dry-run` preview mode shows exactly what will be deleted before making changes
-- **Full-project AST analysis** — regex-based scanning covers export/import patterns, route detection, CSS class usage, and component references across your entire codebase
-- **Monorepo support** — handles large projects efficiently with ignore patterns
-- **CI integration** — JSON output for automated pipelines and gating
+- **Unused export detection** â€” finds functions, types, classes, interfaces, enums, and consts that are exported but never imported within your project
+- **Dead route detection** â€” detects unreachable page components in Next.js App Router projects
+- **Orphaned CSS detection** â€” finds CSS module classes that are defined but never referenced in TSX/JSX files
+- **Safe auto-removal** â€” `--dry-run` preview mode shows exactly what will be deleted before making changes
+- **Full-project AST analysis** â€” regex-based scanning covers export/import patterns, route detection, CSS class usage, and component references across your entire codebase
+- **Monorepo support** â€” handles large projects efficiently with ignore patterns
+- **CI integration** â€” JSON output for automated pipelines and gating
 
 ## Ignore Patterns
 
@@ -96,34 +96,34 @@ DeadCode is one of eight tools in the Revenue Holdings suite. One license covers
 
 | Plan | Price | Best For |
 |------|-------|----------|
-| **Free** | $0 | Individual devs, OSS — CLI only, rate-limited |
-| **DeadCode Individual** | **$12/mo** ($10 billed annually) | Professional devs — unlimited scans, auto-removal, CI integration |
-| **Suite (all 8 tools)** | **$49/mo** ($39 billed annually) | Full Revenue Holdings toolkit — 40% savings |
-| **Team** | **$79/mo** ($63 billed annually) | Up to 5 devs — trend analytics, shared baselines, alerts |
+| **Free** | $0 | Individual devs, OSS â€” CLI only, rate-limited |
+| **DeadCode Individual** | **$12/mo** ($10 billed annually) | Professional devs â€” unlimited scans, auto-removal, CI integration |
+| **Suite (all 8 tools)** | **$49/mo** ($39 billed annually) | Full Revenue Holdings toolkit â€” 40% savings |
+| **Team** | **$79/mo** ($63 billed annually) | Up to 5 devs â€” trend analytics, shared baselines, alerts |
 | **Enterprise** | Custom | SSO, RBAC, compliance reports, dedicated support |
 
-🔹 **No lock-in**: CLI works fully offline on the free tier — no telemetry, no phone-home.
-🔹 **Annual billing**: Save 20%.
+ðŸ”¹ **No lock-in**: CLI works fully offline on the free tier â€” no telemetry, no phone-home.
+ðŸ”¹ **Annual billing**: Save 20%.
 
 ### Per-Tier Features
 
 | Feature | Free | Individual | Suite | Team | Enterprise |
 |---------|:----:|:----------:|:-----:|:----:|:----------:|
-| CLI: scan, stats | ✓ | ✓ | ✓ | ✓ | ✓ |
-| All 3 scanner categories | — | ✓ | ✓ | ✓ | ✓ |
-| Auto-removal (`deadcode remove`) | — | ✓ | ✓ | ✓ | ✓ |
-| Unlimited file scanning | — | ✓ | ✓ | ✓ | ✓ |
-| CI/CD integration (JSON output) | — | ✓ | ✓ | ✓ | ✓ |
-| Project trend baselines | — | — | — | ✓ | ✓ |
-| Dashboard & analytics | — | — | — | ✓ | ✓ |
-| Compliance reports | — | — | — | — | ✓ |
-| RBAC / SSO / SAML / OIDC | — | — | — | — | ✓ |
+| CLI: scan, stats | âœ“ | âœ“ | âœ“ | âœ“ | âœ“ |
+| All 3 scanner categories | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
+| Auto-removal (`deadcode remove`) | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
+| Unlimited file scanning | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
+| CI/CD integration (JSON output) | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
+| Project trend baselines | â€” | â€” | â€” | âœ“ | âœ“ |
+| Dashboard & analytics | â€” | â€” | â€” | âœ“ | âœ“ |
+| Compliance reports | â€” | â€” | â€” | â€” | âœ“ |
+| RBAC / SSO / SAML / OIDC | â€” | â€” | â€” | â€” | âœ“ |
 | Priority support | Community | 24h | 24h | 8h | Dedicated |
 
 ---
 
 <p align="center">
-  <sub>Part of <a href="https://coding-dev-tools.github.io/revenueholdings.dev/">Revenue Holdings</a> — CLI tools built by autonomous AI.</sub>
+  <sub>Part of <a href="https://coding-dev-tools.github.io/revenueholdings.dev/">Revenue Holdings</a> â€” CLI tools built by autonomous AI.</sub>
 </p>
 
 ## CI/CD Integration
@@ -167,8 +167,8 @@ CLI flags override config file settings.
 
 ## Storage
 
-- `.deadcode.yml` — project configuration (ignore patterns, categories)
-- `deadcode-baseline.json` — saved scan results for trend tracking
+- `.deadcode.yml` â€” project configuration (ignore patterns, categories)
+- `deadcode-baseline.json` â€” saved scan results for trend tracking
 
 ## Roadmap
 
@@ -181,4 +181,5 @@ CLI flags override config file settings.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT â€” see [LICENSE](LICENSE)
+
