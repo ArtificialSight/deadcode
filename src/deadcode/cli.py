@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
+import click
 import json
 import sys
 from pathlib import Path
-from typing import Any
-
-import click
 from rich.console import Console
 from rich.table import Table
+
 try:
     from revenueholdings_license import require_license
 except ImportError:
@@ -17,7 +16,7 @@ except ImportError:
 
 from . import __version__
 from .config import DeadCodeConfig
-from .scanner import DeadCodeScanner, ScanResult, Finding
+from .scanner import DeadCodeScanner, Finding
 
 console = Console()
 err_console = Console(stderr=True)

@@ -10,12 +10,10 @@ Detects:
 from __future__ import annotations
 
 import os
+import pathspec
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
-
-import pathspec
 
 # ── Data structures ───────────────────────────────────────────────────
 
@@ -163,7 +161,6 @@ class DeadCodeScanner:
         css_classes: dict[str, list[tuple[str, int]]] = {}  # class -> [(file, line)]
         used_css_classes: set[str] = set()
         components: dict[str, str] = {}  # ComponentName -> file
-        component_imports: set[str] = set()  # names of imported components
         routes: list[tuple[str, str]] = []  # (route_path, file)
 
         for filepath in all_files:
