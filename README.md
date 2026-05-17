@@ -184,14 +184,4 @@ CLI flags override config file settings.
 
 ## License
 
-MIT â€” see [LICENSE](LICENSE)
-
-
-
-## Install via npm
-
-```bash
-npm install -g deadcode-cli
-```
-
-Then run: `deadcode --help`
+MIT — see [LICENSE](LICENSE)
