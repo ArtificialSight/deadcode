@@ -3,14 +3,9 @@
 from __future__ import annotations
 
 import json
-import os
-import tempfile
-from pathlib import Path
-
 import pytest
-
-from deadcode.scanner import DeadCodeScanner, ScanResult, Finding
 from deadcode.cli import cli
+from deadcode.scanner import DeadCodeScanner
 
 
 @pytest.fixture
@@ -279,7 +274,7 @@ class TestCLIIntegration:
     def test_scan_category_filter(self, runner, sample_project):
         result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "orphaned_css"])
         assert result.exit_code == 0
-        data = json.loads(result.output) if "--json-output" in [] else None
+        json.loads(result.output) if "--json-output" in [] else None
         # Just check it doesn't crash
         assert "Orphaned CSS" in result.output or result.exit_code == 0
 

@@ -3,14 +3,10 @@
 from __future__ import annotations
 
 import json
-import os
-from pathlib import Path
-
 import pytest
-
-from deadcode.config import DeadCodeConfig
-from deadcode.scanner import DeadCodeScanner, ScanResult, Finding
 from deadcode.cli import cli
+from deadcode.config import DeadCodeConfig
+from deadcode.scanner import DeadCodeScanner
 
 
 @pytest.fixture
@@ -214,7 +210,7 @@ class TestBugFixUnreferencedComponents:
         result = scanner.scan()
 
         comp_names = {f.name for f in result.unreferenced_components}
-        assert "Button" not in comp_names, f"Button should not be unreferenced — it's imported by App.tsx"
+        assert "Button" not in comp_names, "Button should not be unreferenced — it's imported by App.tsx"
 
     def test_component_not_imported_is_reported(self, tmp_path):
         """Component with zero imports should still be reported."""

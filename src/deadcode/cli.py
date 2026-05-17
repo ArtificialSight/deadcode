@@ -69,7 +69,8 @@ def _get_fail_threshold(ctx: click.Context) -> int:
 @cli.command()
 @click.option("--json-output", "-j", is_flag=True, help="Output as JSON")
 @click.option("--category", "-c", type=click.Choice(ALL_CATEGORIES), default=None, help="Filter by category")
-@click.option("--fail", "fail_threshold", type=int, default=None, help="Exit code 1 if findings >= threshold (overrides .deadcode.yml)")
+@click.option("--fail", "fail_threshold", type=int, default=None,
+              help="Exit code 1 if findings >= threshold (overrides .deadcode.yml)")
 @click.pass_context
 def scan(ctx: click.Context, json_output: bool, category: str | None, fail_threshold: int | None) -> None:
     """Scan project for dead code."""
@@ -162,7 +163,8 @@ def scan(ctx: click.Context, json_output: bool, category: str | None, fail_thres
 
 @cli.command()
 @click.option("--dry-run", is_flag=True, help="Preview what would be removed without making changes")
-@click.option("--category", "-c", type=click.Choice(ALL_CATEGORIES), default=None, help="Only remove findings in this category")
+@click.option("--category", "-c", type=click.Choice(ALL_CATEGORIES),
+              default=None, help="Only remove findings in this category")
 @click.pass_context
 def remove(ctx: click.Context, dry_run: bool, category: str | None) -> None:
     """Remove dead code (with --dry-run for preview).
