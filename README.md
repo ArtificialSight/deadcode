@@ -10,8 +10,11 @@
 [![Python](https://img.shields.io/pypi/pyversions/deadcode)](https://pypi.org/project/deadcode/)
 [![License](https://img.shields.io/pypi/l/deadcode)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
 [![CI](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml/badge.svg)](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/test.yml)
+[![Open Source Alternative](https://img.shields.io/badge/Open_Source_Alternative-%E2%87%92-blue?logo=opensourceinitiative)](https://www.opensourcealternative.to/project/deadcode)
+[![LibHunt](https://img.shields.io/badge/LibHunt-%E2%87%92-blue?logo=codeigniter)](https://www.libhunt.com/r/Coding-Dev-Tools/deadcode)
+[![Awesome Python](https://img.shields.io/badge/Awesome_Python-%E2%87%92-blue?logo=python)](https://github.com/uhub/awesome-python)
 
-**Why DeadCode?** Every TypeScript/React codebase accumulates dead code â€” exports nobody imports, page components replaced but never deleted, CSS classes refactored out but still sitting in `.module.css` files. ESLint catches unused variables but misses the structural decay: orphaned exports bloat your bundles, stale routes confuse new teammates, and orphaned styles silently accumulate. DeadCode scans your entire project with full-project pattern analysis and reports exactly what's safe to remove â€” with a dry-run preview mode so you never delete something you need.
+**Why DeadCode?**
 
 ## Quick Start
 
