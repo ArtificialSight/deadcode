@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "deadcode"
+name = "deadcode-cli"
 version = "0.1.1"
 description = "CLI tool to detect and auto-remove unused exports, dead routes, orphaned CSS in TS/React/Next.js projects"
 readme = "README.md"
