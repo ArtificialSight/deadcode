@@ -10,7 +10,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{name = "Revenue Holdings"}]
-urls = {Homepage = "https://github.com/Coding-Dev-Tools/deadcode", Repository = "https://github.com/Coding-Dev-Tools/deadcode"}
 keywords = ["dead-code", "unused-exports", "typescript", "react", "nextjs", "cli", "css", "tree-shaking"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -37,6 +36,13 @@ dev = [
     "pytest-cov>=4.0.0",
     "ruff>=0.4.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Coding-Dev-Tools/deadcode"
+Documentation = "https://coding-dev-tools.github.io/deadcode"
+Repository = "https://github.com/Coding-Dev-Tools/deadcode"
+Issues = "https://github.com/Coding-Dev-Tools/deadcode/issues"
+Changelog = "https://github.com/Coding-Dev-Tools/deadcode/releases"
 
 [project.scripts]
 deadcode = "deadcode.cli:cli"
