@@ -1,6 +1,6 @@
 {
   "name": "deadcode-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Find unused/dead code in Python projects. Static analysis tool to identify orphaned functions, classes, and imports.",
   "author": "Revenue Holdings <engineering@revenueholdings.dev>",
   "license": "MIT",
@@ -17,11 +17,20 @@
   },
   "keywords": [
     "dead-code",
+    "unused-code",
     "linter",
     "static-analysis",
-    "python",
+    "code-quality",
+    "treeshaking",
+    "bundle-size",
+    "react",
+    "nextjs",
+    "typescript",
+    "css",
+    "orphaned",
     "cli",
-    "code-quality"
+    "developer-tools",
+    "code-cleanup"
   ],
   "files": [
     "cli.js"
