@@ -292,3 +292,63 @@ class TestCLIIntegration:
         assert result.exit_code == 0
         assert "Files scanned" in result.output
         assert "Unused exports" in result.output
+
+    def test_scan_category_dead_route(self, runner, sample_project):
+        """Filter scan results by dead_route category."""
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "dead_route", "--json-output"])
+        assert result.exit_code == 0
+        data = json.loads(result.output, strict=False)
+        for f in data["findings"]:
+            assert f["category"] == "dead_route"
+        names = {f["name"] for f in data["findings"]}
+        assert "/deadpage" in names
+
+    def test_scan_category_unreferenced_component(self, runner, sample_project):
+        """Filter scan results by unreferenced_component category."""
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "unreferenced_component", "--json-output"])
+        assert result.exit_code == 0
+        data = json.loads(result.output, strict=False)
+        for f in data["findings"]:
+            assert f["category"] == "unreferenced_component"
+        names = {f["name"] for f in data["findings"]}
+        assert "UnusedWidget" in names
+
+    def test_scan_fail_with_category(self, runner, sample_project):
+        """--fail combined with --category fails only when filtered count >= threshold."""
+        # orphaned_css has 1 finding in sample_project → threshold 0 triggers exit 1
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "orphaned_css", "--fail", "0"])
+        assert result.exit_code == 1
+        # A high threshold should pass
+        result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "orphaned_css", "--fail", "999"])
+        assert result.exit_code == 0
+
+    def test_remove_dry_run_category(self, runner, sample_project):
+        """--dry-run with --category filters the WOULD REMOVE listing."""
+        result = runner.invoke(cli, ["-p", str(sample_project), "remove", "--dry-run", "-c", "unused_export"])
+        assert result.exit_code == 0
+        assert "WOULD REMOVE" in result.output
+        assert "unusedHelper" in result.output or "UNUSED_CONST" in result.output
+
+    def test_remove_actual_removal(self, runner, tmp_path):
+        """Verify remove blanks dead-code lines in files (3s sleep included)."""
+        mod = tmp_path / "src" / "mod.ts"
+        mod.parent.mkdir(parents=True, exist_ok=True)
+        mod.write_text(
+            'export function usedFn() { return 1; }\n'
+            'export function deadFn() { return 2; }\n'
+        )
+        app = tmp_path / "src" / "app.ts"
+        app.write_text(
+            'import { usedFn } from "./mod";\n'
+            'console.log(usedFn());\n'
+        )
+
+        before = mod.read_text(encoding="utf-8")
+        assert "deadFn" in before
+        assert "usedFn" in before
+
+        runner.invoke(cli, ["-p", str(tmp_path), "remove"])
+
+        after = mod.read_text(encoding="utf-8")
+        assert "deadFn" not in after, "deadFn line should have been blanked"
+        assert "usedFn" in after, "usedFn line must be preserved"

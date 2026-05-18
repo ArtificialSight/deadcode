@@ -114,7 +114,7 @@ DeadCode is one of eight tools in the Revenue Holdings suite. One license covers
 | Feature | Free | Individual | Suite | Team | Enterprise |
 |---------|:----:|:----------:|:-----:|:----:|:----------:|
 | CLI: scan, stats | âœ“ | âœ“ | âœ“ | âœ“ | âœ“ |
-| All 3 scanner categories | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
+| All 4 scanner categories | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
 | Auto-removal (`deadcode remove`) | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
 | Unlimited file scanning | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
 | CI/CD integration (JSON output) | â€” | âœ“ | âœ“ | âœ“ | âœ“ |
