@@ -15,7 +15,7 @@
 [![LibHunt](https://img.shields.io/badge/LibHunt-%E2%87%92-blue?logo=codeigniter)](https://www.libhunt.com/r/Coding-Dev-Tools/deadcode)
 [![Awesome Python](https://img.shields.io/badge/Awesome_Python-%E2%87%92-blue?logo=python)](https://github.com/uhub/awesome-python)
 
-**Why DeadCode?**
+**Why DeadCode?** Dead code silently bloats your bundle, slows your CI, and confuses new developers. Linters catch unused variables — but they miss orphaned React components, CSS classes nobody references, API routes with zero traffic, and exported functions called from nowhere. DeadCode finds all of it. It maps your entire dependency graph, marks what's reachable, and flags everything else for removal. Run it in CI to prevent dead code from shipping in the first place.
 
 ## Quick Start
 
