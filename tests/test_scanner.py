@@ -274,9 +274,9 @@ class TestCLIIntegration:
     def test_scan_category_filter(self, runner, sample_project):
         result = runner.invoke(cli, ["-p", str(sample_project), "scan", "-c", "orphaned_css"])
         assert result.exit_code == 0
-        json.loads(result.output) if "--json-output" in [] else None
-        # Just check it doesn't crash
-        assert "Orphaned CSS" in result.output or result.exit_code == 0
+        # Should only show orphaned CSS findings
+        assert "Orphaned CSS" in result.output
+        assert "Unused Exports" not in result.output
 
     def test_scan_nonexistent_dir(self, runner):
         result = runner.invoke(cli, ["-p", "/nonexistent/path", "scan"])
