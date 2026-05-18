@@ -96,7 +96,7 @@ Default ignores: `node_modules/`, `.git/`, `.next/`, `dist/`, `build/`, `public/
 
 ## Pricing
 
-DeadCode is one of eight tools in the DevForge suite. One license covers all CLI tools.
+DeadCode is one of eleven tools in the DevForge suite. One license covers all CLI tools.
 
 | Plan | Price | Best For |
 |------|-------|----------|
@@ -114,7 +114,7 @@ DeadCode is one of eight tools in the DevForge suite. One license covers all CLI
 | Feature | Free | Individual | Suite | Team | Enterprise |
 |---------|:----:|:----------:|:-----:|:----:|:----------:|
 | CLI: scan, stats | ✓ | ✓ | ✓ | ✓ | ✓ |
-| All 3 scanner categories | — | ✓ | ✓ | ✓ | ✓ |
+| All 4 scanner categories | — | ✓ | ✓ | ✓ | ✓ |
 | Auto-removal (`deadcode remove`) | — | ✓ | ✓ | ✓ | ✓ |
 | Unlimited file scanning | — | ✓ | ✓ | ✓ | ✓ |
 | CI/CD integration (JSON output) | — | ✓ | ✓ | ✓ | ✓ |
