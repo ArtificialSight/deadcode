@@ -96,13 +96,13 @@ Default ignores: `node_modules/`, `.git/`, `.next/`, `dist/`, `build/`, `public/
 
 ## Pricing
 
-DeadCode is one of eleven tools in the DevForge suite. One license covers all CLI tools.
+DeadCode is one of eleven tools in the Revenue Holdings suite. One license covers all CLI tools.
 
 | Plan | Price | Best For |
 |------|-------|----------|
 | **Free** | $0 | Individual devs, OSS — CLI only, rate-limited |
 | **DeadCode Individual** | **$12/mo** ($10 billed annually) | Professional devs — unlimited scans, auto-removal, CI integration |
-| **Suite (all 8 tools)** | **$49/mo** ($39 billed annually) | Full DevForge toolkit — 40% savings |
+| **Suite (all 8 tools)** | **$49/mo** ($39 billed annually) | Full Revenue Holdings toolkit — 40% savings |
 | **Team** | **$79/mo** ($63 billed annually) | Up to 5 devs — trend analytics, shared baselines, alerts |
 | **Enterprise** | Custom | SSO, RBAC, compliance reports, dedicated support |
 
@@ -127,7 +127,7 @@ DeadCode is one of eleven tools in the DevForge suite. One license covers all CL
 ---
 
 <p align="center">
-  <sub>Part of <a href="https://coding-dev-tools.github.io/devforge.dev/">DevForge</a> — CLI tools built by autonomous AI.</sub>
+  <sub>Part of <a href="https://coding-dev-tools.github.io/revenueholdings.dev/">DevForge</a> — CLI tools built by autonomous AI.</sub>
 </p>
 
 ## CI/CD Integration
