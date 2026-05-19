@@ -6,17 +6,16 @@
 
 > ⭐ **Star this repo** if you care about bundle size — it helps other devs find DeadCode!
 
-[![PyPI](https://img.shields.io/pypi/v/deadcode-cli)](https://pypi.org/project/deadcode-cli/)
-[![Python](https://img.shields.io/pypi/pyversions/deadcode-cli)](https://pypi.org/project/deadcode-cli/)
-[![License](https://img.shields.io/pypi/l/deadcode-cli)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/Coding-Dev-Tools/deadcode)
+[![License](https://img.shields.io/github/license/Coding-Dev-Tools/deadcode)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
 [![CI](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/ci.yml/badge.svg)](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/ci.yml)
 [![Open Source Alternative](https://img.shields.io/badge/Open_Source_Alternative-%E2%87%92-blue?logo=opensourceinitiative)](https://www.opensourcealternative.to/project/deadcode)
-[![LibHunt](https://img.shields.io/badge/LibHunt-%E2%87%92-blue?logo=codeigniter)](https://www.libhunt.com/r/Coding-Dev-Tools/deadcode)
 
 ## Installation
 
 ```bash
-pip install deadcode-cli
+# Install from source (PyPI publishing pending)
+pip install git+https://github.com/Coding-Dev-Tools/deadcode.git
 
 # Scan current project
 deadcode scan
