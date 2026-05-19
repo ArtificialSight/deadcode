@@ -1,23 +1,19 @@
 # DeadCode
 
 [![GitHub stars](https://img.shields.io/github/stars/Coding-Dev-Tools/deadcode?style=social)](https://github.com/Coding-Dev-Tools/deadcode/stargazers)
-[![Awesome DevOps](https://img.shields.io/badge/Awesome_DevOps-Submitted-grey?logo=github)](https://github.com/wmariuss/awesome-devops)<!-- PR #433 -->
 
 **Detect and remove unused exports, dead routes, orphaned CSS, and unreferenced components in TypeScript/React/Next.js projects.**
 
 > ⭐ **Star this repo** if you care about bundle size — it helps other devs find DeadCode!
 
-[![PyPI](https://img.shields.io/pypi/v/deadcode)](https://pypi.org/project/deadcode/)
-[![Python](https://img.shields.io/pypi/pyversions/deadcode)](https://pypi.org/project/deadcode/)
-[![License](https://img.shields.io/pypi/l/deadcode)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/deadcode-cli)](https://pypi.org/project/deadcode-cli/)
+[![Python](https://img.shields.io/pypi/pyversions/deadcode-cli)](https://pypi.org/project/deadcode-cli/)
+[![License](https://img.shields.io/pypi/l/deadcode-cli)](https://github.com/Coding-Dev-Tools/deadcode/blob/main/LICENSE)
 [![CI](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/ci.yml/badge.svg)](https://github.com/Coding-Dev-Tools/deadcode/actions/workflows/ci.yml)
 [![Open Source Alternative](https://img.shields.io/badge/Open_Source_Alternative-%E2%87%92-blue?logo=opensourceinitiative)](https://www.opensourcealternative.to/project/deadcode)
 [![LibHunt](https://img.shields.io/badge/LibHunt-%E2%87%92-blue?logo=codeigniter)](https://www.libhunt.com/r/Coding-Dev-Tools/deadcode)
-[![Awesome Python](https://img.shields.io/badge/Awesome_Python-%E2%87%92-blue?logo=python)](https://github.com/uhub/awesome-python)
 
-**Why DeadCode?** Dead code silently bloats your bundle, slows your CI, and confuses new developers. Linters catch unused variables — but they miss orphaned React components, CSS classes nobody references, API routes with zero traffic, and exported functions called from nowhere. DeadCode finds all of it. It maps your entire dependency graph, marks what's reachable, and flags everything else for removal. Run it in CI to prevent dead code from shipping in the first place.
-
-## Quick Start
+## Installation
 
 ```bash
 pip install deadcode
@@ -114,7 +110,7 @@ DeadCode is one of 11 tools in the DevForge suite. One license covers all CLI to
 | Feature | Free | Individual | Suite | Team | Enterprise |
 |---------|:----:|:----------:|:-----:|:----:|:----------:|
 | CLI: scan, stats | ✓ | ✓ | ✓ | ✓ | ✓ |
-| All 3 scanner categories | — | ✓ | ✓ | ✓ | ✓ |
+| All 4 scanner categories | — | ✓ | ✓ | ✓ | ✓ |
 | Auto-removal (`deadcode remove`) | — | ✓ | ✓ | ✓ | ✓ |
 | Unlimited file scanning | — | ✓ | ✓ | ✓ | ✓ |
 | CI/CD integration (JSON output) | — | ✓ | ✓ | ✓ | ✓ |
@@ -127,7 +123,7 @@ DeadCode is one of 11 tools in the DevForge suite. One license covers all CLI to
 ---
 
 <p align="center">
-  <sub>Part of <a href="https://coding-dev-tools.github.io/devforge.dev/">DevForge</a> — CLI tools built by autonomous AI.</sub>
+  <sub>Part of <a href="https://coding-dev-tools.github.io/revenueholdings.dev/">Revenue Holdings</a> — CLI tools built by autonomous AI.</sub>
 </p>
 
 ## CI/CD Integration

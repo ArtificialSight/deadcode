@@ -6,6 +6,7 @@ import json
 import pytest
 from deadcode.cli import cli
 from deadcode.scanner import DeadCodeScanner
+from pathlib import Path
 
 
 @pytest.fixture
@@ -292,3 +293,18 @@ class TestCLIIntegration:
         assert result.exit_code == 0
         assert "Files scanned" in result.output
         assert "Unused exports" in result.output
+
+    def test_main_module_entry_point(self, runner):
+        """Test that python -m deadcode works (__main__ entry point fix)."""
+        import subprocess
+        import sys
+        result = subprocess.run(
+            [sys.executable, "-m", "deadcode", "--help"],
+            capture_output=True, text=True,
+            cwd=str(Path(__file__).parent.parent / "src"),
+        )
+        assert result.returncode == 0
+        assert "DeadCode" in result.stdout
+        assert "scan" in result.stdout
+        assert "remove" in result.stdout
+        assert "stats" in result.stdout
