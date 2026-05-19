@@ -16,7 +16,7 @@
 ## Installation
 
 ```bash
-pip install deadcode
+pip install deadcode-cli
 
 # Scan current project
 deadcode scan
